@@ -1,7 +1,6 @@
 package com.example.parkinglot.model;
 
 import com.example.parkinglot.enums.SpotState;
-import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Arrays;
@@ -13,17 +12,13 @@ public class ParkingSpot {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Setter
     private String spotSize;
 
-    @Setter
     private boolean isOccupied;
 
     @Enumerated(EnumType.STRING)
     private SpotState state;
 
-
-    @Setter
     @ManyToOne
     @JoinColumn(name = "levelId", nullable = false)
     private Level level;
