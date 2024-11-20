@@ -37,7 +37,7 @@ public class ParkingSpot {
     }
 
     // Getters and Setters
-    public void setIsOccupied(boolean occupied) {
+    public synchronized void setIsOccupied(boolean occupied) {
         isOccupied = occupied;
     }
 
@@ -45,7 +45,7 @@ public class ParkingSpot {
         this.spotSize = spotSize;
     }
 
-    public void setState(SpotState state) {
+    public synchronized void setState(SpotState state) {
         this.state = state;
     }
 
@@ -71,5 +71,9 @@ public class ParkingSpot {
 
     public String getSpotSize() {
         return spotSize;
+    }
+
+    public Long getSpotId(){
+        return id;
     }
 }

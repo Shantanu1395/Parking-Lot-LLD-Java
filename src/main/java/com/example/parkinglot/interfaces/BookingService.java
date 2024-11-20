@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface BookingService {
     Booking createBooking(Long vehicleId, Long parkingSpotId, LocalDateTime startTime, LocalDateTime endTime);
+    Booking endBooking(Long bookingId);
     Booking extendBooking(Long bookingId, LocalDateTime newEndTime);
     void cancelBooking(Long bookingId);
     List<Booking> getBookingsByVehicle(Long vehicleId);

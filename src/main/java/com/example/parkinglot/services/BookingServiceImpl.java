@@ -2,6 +2,7 @@ package com.example.parkinglot.services;
 
 import com.example.parkinglot.enums.BookingState;
 import com.example.parkinglot.interfaces.ParkingLotService;
+import com.example.parkinglot.interfaces.ParkingSpotService;
 import com.example.parkinglot.interfaces.validation.BookingValidator;
 import com.example.parkinglot.model.Booking;
 import com.example.parkinglot.model.ParkingSpot;
@@ -30,6 +31,9 @@ public class BookingServiceImpl implements BookingService {
 
     @Autowired
     private ParkingLotService parkingLotService;
+
+    @Autowired
+    private ParkingSpotService parkingSpotService;
 
     private BookingValidator validatorChain;
 
@@ -66,6 +70,16 @@ public class BookingServiceImpl implements BookingService {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid booking ID"));
 
         booking.setEndTime(newEndTime);
+        return bookingRepository.save(booking);
+    }
+
+    @Override
+    public Booking endBooking(Long bookingId) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid booking ID"));
+
+        booking.setState(BookingState.COMPLETED);
+        parkingSpotService.releaseSpot(booking.getParkingSpot().getSpotId());
         return bookingRepository.save(booking);
     }
 
