@@ -1,8 +1,10 @@
 package com.example.parkinglot.model;
 
+import com.example.parkinglot.enums.SpotState;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Arrays;
 import java.util.List;
 
 @Entity
@@ -16,6 +18,10 @@ public class ParkingSpot {
 
     @Setter
     private boolean isOccupied;
+
+    @Enumerated(EnumType.STRING)
+    private SpotState state;
+
 
     @Setter
     @ManyToOne
@@ -35,6 +41,7 @@ public class ParkingSpot {
     public ParkingSpot() {
     }
 
+    // Getters and Setters
     public void setIsOccupied(boolean occupied) {
         isOccupied = occupied;
     }
@@ -43,9 +50,31 @@ public class ParkingSpot {
         this.spotSize = spotSize;
     }
 
+    public void setState(SpotState state) {
+        this.state = state;
+    }
+
     public void setLevel(Level level) {
         this.level = level;
     }
 
-    // Getters and Setters
+    public boolean isOccupied() {
+        return isOccupied;
+    }
+
+    public void setVehicle(Vehicle vehicle) {
+        this.vehicle = vehicle;
+    }
+
+    public Vehicle getVehicle() {
+        return vehicle;
+    }
+
+    public List<ParkingRate> getParkingRates() {
+        return parkingRates;
+    }
+
+    public String getSpotSize() {
+        return spotSize;
+    }
 }

@@ -1,4 +1,4 @@
-package com.example.parkinglot.repository;
+package com.example.parkinglot.repositories;
 
 
 import com.example.parkinglot.model.ParkingLot;

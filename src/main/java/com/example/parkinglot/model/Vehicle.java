@@ -20,5 +20,35 @@ public class Vehicle {
     @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Booking> bookings;
 
+    // Static factory method
+    public static Vehicle create(String licensePlate, String type) {
+        Vehicle vehicle = new Vehicle();
+        vehicle.setLicensePlate(licensePlate);
+        vehicle.setType(type);
+        vehicle.setParkedAt(null); // Initialize parkedAt to null
+        return vehicle;
+    }
+
     // Getters and Setters
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setLicensePlate(String licensePlate) {
+        this.licensePlate = licensePlate;
+    }
+
+    public void setParkedAt(LocalDateTime parkedAt) {
+        this.parkedAt = parkedAt;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setParkingSpot(ParkingSpot parkingSpot) {
+        this.parkingSpot = parkingSpot;
+    }
+
 }

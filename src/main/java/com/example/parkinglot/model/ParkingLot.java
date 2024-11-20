@@ -12,11 +12,21 @@ public class ParkingLot {
     private String name;
     private String address;
 
+
+
     @OneToMany(mappedBy = "parkingLot", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Level> levels;
 
     @OneToMany(mappedBy = "parkingLot", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Gate> gates;
+
+    public ParkingLot() {
+    }
+
+    public ParkingLot(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 
     public void setName(String name) {
         this.name = name;
@@ -24,6 +34,22 @@ public class ParkingLot {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public String getAddress() {
+        return this.address;
+    }
+
+    public Long getId(){
+        return id;
     }
 
     // Getters and Setters

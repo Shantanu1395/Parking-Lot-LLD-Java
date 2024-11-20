@@ -20,6 +20,13 @@ public class Level {
     @OneToMany(mappedBy = "level", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ParkingSpot> parkingSpots;
 
+    public static Level createLevel(int floorNumber, ParkingLot parkingLot) {
+        Level level = new Level();
+        level.setFloorNumber(floorNumber);
+        level.setParkingLot(parkingLot);
+        return level;
+    }
+
     public void setFloorNumber(int floorNumber) {
         this.floorNumber = floorNumber;
     }
