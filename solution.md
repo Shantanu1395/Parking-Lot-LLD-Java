@@ -237,60 +237,41 @@ public class Vehicle {
 
 ```java
 public interface ParkingLotService {
-    ParkingLot createParkingLot(String name, String address); // Factory Pattern can be used in the implementation
-    List<ParkingLot> getAllParkingLots();
-    ParkingLot getParkingLotById(Long id);
-    void deleteParkingLot(Long id);
+    ParkingLot createParkingLot(String name);
 }
-```
-
-```java
-public interface LevelService {
-    Level addLevel(int floorNumber, Long parkingLotId); // Factory Method Pattern for creating Levels
-    List<Level> getLevelsByParkingLot(Long parkingLotId);
-    void removeLevel(Long levelId);
-}
-```
-
-```java
-public interface ParkingSpotService {
-    ParkingSpot createSpot(String spotSize, Long levelId); // Factory Pattern for creating spots
-    ParkingSpot assignSpotToVehicle(Long parkingSpotId, Long vehicleId); // Strategy Pattern for spot assignment
-    void releaseSpot(Long parkingSpotId);
-    List<ParkingSpot> getAvailableSpots(String spotSize, Long levelId);
-}
-```
-
-```java
 public interface GateService {
-    Gate addGate(String type, String location, Long parkingLotId); // Factory Pattern for creating gates
-    List<Gate> getGatesByParkingLot(Long parkingLotId);
-    void removeGate(Long gateId);
+    Gate addGate(String type, String location, ParkingLot parkingLot);
 }
-```
-
-```java
-public interface ParkingRateService {
-    ParkingRate setRate(Long parkingSpotId, String spotSize, double hourlyRate, LocalDateTime startTime, LocalDateTime endTime);
-    List<ParkingRate> getRatesBySpot(Long parkingSpotId);
-    double calculateRate(Long parkingSpotId, LocalDateTime startTime, LocalDateTime endTime); // Template Method Pattern
+public interface LevelService {
+    Level addLevel(int floorNumber, ParkingLot parkingLot);
 }
-```
-
-```java
 public interface VehicleService {
-    Vehicle registerVehicle(String licensePlate, String type); // Factory Pattern for vehicle creation
-    Vehicle getVehicleById(Long vehicleId);
-    List<Vehicle> getVehiclesByUser(Long userId);
+    Vehicle registerVehicle(String licensePlate, String type);
 }
-```
-
-```java
+public interface ParkingSpotService {
+    ParkingSpot createSpot(String spotSize, Long levelId);
+    ParkingSpot assignSpotToVehicle(Vehicle vehicle);
+    void releaseSpot(Long parkingSpotId);
+}
 public interface BookingService {
-    Booking createBooking(Long vehicleId, Long parkingSpotId, LocalDateTime startTime, LocalDateTime endTime);
-    Booking extendBooking(Long bookingId, LocalDateTime newEndTime);
-    double calculateFee(Long bookingId); // Template Method Pattern for fee calculation
-    List<Booking> getBookingsByVehicle(Long vehicleId);
+    Booking createBooking(Vehicle vehicle, Long parkingSpotId, LocalDateTime startTime, LocalDateTime endTime);
+    Booking endBooking(Long bookingId);
+    double calculateFee(Booking booking); // Simplified to exclude strategy as parameter
+    Booking findById(Long bookingId);
+}
+Strategies
+
+public interface FeeCalculationStrategy {
+    double calculateFee(Booking booking);
+}
+public interface SpotAssignmentStrategy {
+    ParkingSpot assignSpot(Vehicle vehicle);
+}
+Validations
+
+public interface BookingValidator {
+    void setNext(BookingValidator nextValidator);
+    void validate(Booking request) throws ValidationException;
 }
 ```
 
