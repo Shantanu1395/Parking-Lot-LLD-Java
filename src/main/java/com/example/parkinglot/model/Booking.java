@@ -4,6 +4,7 @@ import com.example.parkinglot.enums.BookingState;
 import com.example.parkinglot.enums.SpotState;
 
 import javax.persistence.*;
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 @Entity
@@ -22,7 +23,7 @@ public class Booking {
     @JoinColumn(name = "parkingSpotId", nullable = false)
     private ParkingSpot parkingSpot;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "vehicleId", nullable = false)
     private Vehicle vehicle;
 
@@ -72,5 +73,25 @@ public class Booking {
 
     public BookingState getState() {
         return state;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public long calculateDurationInHours() {
+        if (startTime == null || endTime == null) {
+            throw new IllegalArgumentException("Start time and end time cannot be null");
+        }
+
+        if (endTime.isBefore(startTime)) {
+            throw new IllegalArgumentException("End time cannot be before start time");
+        }
+
+        // Calculate the duration between startTime and endTime
+        Duration duration = Duration.between(startTime, endTime);
+
+        // Convert the duration to minutes
+        return duration.toHours();
     }
 }

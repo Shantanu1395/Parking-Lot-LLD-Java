@@ -26,6 +26,7 @@ public class Level {
         return level;
     }
 
+    // Getters and Setters
     public void setFloorNumber(int floorNumber) {
         this.floorNumber = floorNumber;
     }
@@ -34,5 +35,7 @@ public class Level {
         this.parkingLot = parkingLot;
     }
 
-    // Getters and Setters
+    public Long getId() {
+        return id;
+    }
 }

@@ -18,8 +18,8 @@ public class ExactSizeMatchStrategy implements SpotAssignmentStrategy {
     private ParkingSpotRepository parkingSpotRepository;
 
     @Override
-    public ParkingSpot assignSpot(Vehicle vehicle, Long levelId) {
-        Optional<ParkingSpot> spot = parkingSpotRepository.findAvailableSpotsBySizeAndLevel(vehicle.getType(), levelId)
+    public ParkingSpot assignSpot(Vehicle vehicle) {
+        Optional<ParkingSpot> spot = parkingSpotRepository.findAvailableSpotsBySize(vehicle.getType())
                 .stream()
                 .findFirst();
 

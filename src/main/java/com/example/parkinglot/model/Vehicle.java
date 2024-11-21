@@ -14,7 +14,7 @@ public class Vehicle {
     private LocalDateTime parkedAt;
 
     @OneToOne
-    @JoinColumn(name = "parkingSpotId", nullable = false)
+    @JoinColumn(name = "parkingSpotId", nullable = true)
     private ParkingSpot parkingSpot;
 
     @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -51,4 +51,19 @@ public class Vehicle {
         this.parkingSpot = parkingSpot;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public String getLicensePlate() {
+        return licensePlate;
+    }
+
+    public void setVehicleType(String vehicleType) {
+        vehicleType = vehicleType;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

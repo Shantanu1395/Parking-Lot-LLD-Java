@@ -9,5 +9,4 @@ import java.util.List;
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
     // Add custom queries if needed
-    List<Booking> findBookingsByVehicle_Id(Long vehicleId);
 }

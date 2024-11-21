@@ -76,4 +76,12 @@ public class ParkingSpot {
     public Long getSpotId(){
         return id;
     }
+
+    public Level getLevel() {
+        return level;
+    }
+
+    public SpotState getState() {
+        return state;
+    }
 }

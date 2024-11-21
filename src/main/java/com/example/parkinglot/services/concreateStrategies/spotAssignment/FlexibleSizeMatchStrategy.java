@@ -16,9 +16,9 @@ public class FlexibleSizeMatchStrategy implements SpotAssignmentStrategy {
     private ParkingSpotRepository parkingSpotRepository;
 
     @Override
-    public ParkingSpot assignSpot(Vehicle vehicle, Long levelId) {
+    public ParkingSpot assignSpot(Vehicle vehicle) {
         // Find a spot of the same size or larger
-        Optional<ParkingSpot> spot = parkingSpotRepository.findAvailableFlexibleSpots(vehicle.getType(), levelId)
+        Optional<ParkingSpot> spot = parkingSpotRepository.findAvailableFlexibleSpots(vehicle.getType())
                 .stream()
                 .findFirst();
 

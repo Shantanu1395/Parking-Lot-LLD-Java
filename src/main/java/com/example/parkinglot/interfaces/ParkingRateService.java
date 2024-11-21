@@ -7,5 +7,4 @@ import java.util.List;
 
 public interface ParkingRateService {
     ParkingRate setRate(Long parkingSpotId, String spotSize, double hourlyRate, LocalDateTime startTime, LocalDateTime endTime);
-    List<ParkingRate> getRatesBySpot(Long parkingSpotId);
 }

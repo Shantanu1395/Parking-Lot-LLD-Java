@@ -39,12 +39,4 @@ public class ParkingRateServiceImpl implements ParkingRateService {
 
         return parkingRateRepository.save(parkingRate);
     }
-
-    @Override
-    public List<ParkingRate> getRatesBySpot(Long parkingSpotId) {
-        ParkingSpot parkingSpot = parkingSpotRepository.findById(parkingSpotId)
-                .orElseThrow(() -> new IllegalArgumentException("Parking spot not found"));
-
-        return parkingRateRepository.findByParkingSpotId(parkingSpotId);
-    }
 }

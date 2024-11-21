@@ -4,5 +4,5 @@ import com.example.parkinglot.model.ParkingSpot;
 import com.example.parkinglot.model.Vehicle;
 
 public interface SpotAssignmentStrategy {
-    ParkingSpot assignSpot(Vehicle vehicle, Long levelId);
+    ParkingSpot assignSpot(Vehicle vehicle);
 }

@@ -11,12 +11,16 @@ import com.example.parkinglot.interfaces.ParkingSpotService;
 import com.example.parkinglot.interfaces.strategy.SpotAssignmentStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 @Service
 public class ParkingSpotServiceImpl implements ParkingSpotService {
+
+    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
     @Autowired
     private ParkingSpotRepository parkingSpotRepository;
@@ -45,56 +49,63 @@ public class ParkingSpotServiceImpl implements ParkingSpotService {
         return parkingSpotRepository.save(parkingSpot);
     }
 
+    @Transactional
     @Override
-    public ParkingSpot assignSpotToVehicle(Long parkingSpotId, Long vehicleId) {
-        Vehicle vehicle = vehicleRepository.findById(vehicleId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid vehicle ID"));
+    public ParkingSpot assignSpotToVehicle(Vehicle vehicle) {
 
-        ParkingSpot assignedSpot = spotAssignmentStrategy.assignSpot(vehicle, parkingSpotId);
+        lock.writeLock().lock();
+        try{
+            ParkingSpot assignedSpot = spotAssignmentStrategy.assignSpot(vehicle);
 
-        if (assignedSpot == null) {
-            throw new IllegalStateException("No available parking spot for vehicle type: " + vehicle.getType());
+            if (assignedSpot == null) {
+                throw new IllegalStateException("No available parking spot for vehicle type: " + vehicle.getType());
+            }
+
+            assignedSpot.setIsOccupied(true);
+            assignedSpot.setVehicle(vehicle);
+            assignedSpot.setState(SpotState.OCCUPIED);
+            vehicle.setParkingSpot(assignedSpot);
+
+            parkingSpotRepository.save(assignedSpot);
+            vehicleRepository.save(vehicle);
+
+            return assignedSpot;
+        }finally {
+            lock.writeLock().unlock();
         }
-
-        assignedSpot.setIsOccupied(true);
-        assignedSpot.setVehicle(vehicle);
-        assignedSpot.setState(SpotState.OCCUPIED);
-        vehicle.setParkingSpot(assignedSpot);
-
-        parkingSpotRepository.save(assignedSpot);
-        vehicleRepository.save(vehicle);
-
-        return assignedSpot;
     }
 
+    @Transactional
     @Override
     public void releaseSpot(Long parkingSpotId) {
-        Optional<ParkingSpot> parkingSpotOptional = parkingSpotRepository.findById(parkingSpotId);
 
-        if (parkingSpotOptional.isEmpty()) {
-            throw new IllegalArgumentException("Parking spot not found for ID: " + parkingSpotId);
+        try{
+            lock.writeLock().lock();
+
+            Optional<ParkingSpot> parkingSpotOptional = parkingSpotRepository.findById(parkingSpotId);
+
+            if (parkingSpotOptional.isEmpty()) {
+                throw new IllegalArgumentException("Parking spot not found for ID: " + parkingSpotId);
+            }
+
+            ParkingSpot parkingSpot = parkingSpotOptional.get();
+            if (parkingSpot.getState().equals(SpotState.AVAILABLE)) {
+                throw new IllegalStateException("Parking spot is already vacant.");
+            }
+
+            Vehicle vehicle = parkingSpot.getVehicle();
+            parkingSpot.setIsOccupied(false);
+            parkingSpot.setVehicle(null);
+            parkingSpot.setState(SpotState.AVAILABLE);
+
+            if (vehicle != null) {
+                vehicle.setParkingSpot(null);
+                vehicleRepository.save(vehicle);
+            }
+
+            parkingSpotRepository.save(parkingSpot);
+        }finally {
+            lock.writeLock().unlock();
         }
-
-        ParkingSpot parkingSpot = parkingSpotOptional.get();
-        if (!parkingSpot.isOccupied()) {
-            throw new IllegalStateException("Parking spot is already vacant.");
-        }
-
-        Vehicle vehicle = parkingSpot.getVehicle();
-        parkingSpot.setIsOccupied(false);
-        parkingSpot.setVehicle(null);
-        parkingSpot.setState(SpotState.AVAILABLE);
-
-        if (vehicle != null) {
-            vehicle.setParkingSpot(null);
-            vehicleRepository.save(vehicle);
-        }
-
-        parkingSpotRepository.save(parkingSpot);
-    }
-
-    @Override
-    public List<ParkingSpot> getAvailableSpots(String spotSize, Long levelId) {
-        return parkingSpotRepository.findAvailableSpotsBySizeAndLevel(spotSize, levelId);
     }
 }

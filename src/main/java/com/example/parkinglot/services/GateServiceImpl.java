@@ -13,38 +13,15 @@ import java.util.List;
 public class GateServiceImpl implements GateService {
 
     private final GateRepository gateRepository;
-    private final ParkingLotRepository parkingLotRepository;
 
-    // Singleton for Service Initialization
-    private static GateServiceImpl instance;
-
-    private GateServiceImpl(GateRepository gateRepository, ParkingLotRepository parkingLotRepository) {
+    private GateServiceImpl(GateRepository gateRepository) {
         this.gateRepository = gateRepository;
-        this.parkingLotRepository = parkingLotRepository;
     }
 
     // Factory Pattern for Creating Gate Objects
     @Override
-    public Gate addGate(String type, String location, Long parkingLotId) {
-        ParkingLot parkingLot = parkingLotRepository.findById(parkingLotId)
-                .orElseThrow(() -> new IllegalArgumentException("Parking lot not found"));
-
-        Gate gate = Gate.createGate(type, location, parkingLot); // Factory Pattern
+    public Gate addGate(String type, String location, ParkingLot parkingLot) {
+        Gate gate = Gate.createGate("Entrance", "Front", parkingLot);
         return gateRepository.save(gate);
-    }
-
-    // Strategy Pattern for Querying Gates
-    @Override
-    public List<Gate> getGatesByParkingLot(Long parkingLotId) {
-        parkingLotRepository.findById(parkingLotId)
-                .orElseThrow(() -> new IllegalArgumentException("Parking lot not found"));
-
-        return gateRepository.findByParkingLotId(parkingLotId);
-    }
-
-    // Simplified removal logic without Command Pattern
-    @Override
-    public void removeGate(Long gateId) {
-        gateRepository.deleteById(gateId);
     }
 }

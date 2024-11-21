@@ -6,6 +6,7 @@ import com.example.parkinglot.interfaces.ParkingSpotService;
 import com.example.parkinglot.interfaces.validation.BookingValidator;
 import com.example.parkinglot.model.Booking;
 import com.example.parkinglot.model.ParkingSpot;
+import com.example.parkinglot.model.Vehicle;
 import com.example.parkinglot.repositories.BookingRepository;
 import com.example.parkinglot.repositories.ParkingSpotRepository;
 import com.example.parkinglot.interfaces.BookingService;
@@ -38,14 +39,10 @@ public class BookingServiceImpl implements BookingService {
     private BookingValidator validatorChain;
 
     @Override
-    public Booking createBooking(Long vehicleId, Long parkingSpotId, LocalDateTime startTime, LocalDateTime endTime) {
+    public Booking createBooking(Vehicle vehicle, Long parkingSpotId, LocalDateTime startTime, LocalDateTime endTime) {
 
         ParkingSpot parkingSpot = parkingSpotRepository.findById(parkingSpotId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid parking spot ID"));
-
-        if (parkingSpot.isOccupied()) {
-            throw new IllegalStateException("Parking spot is already occupied.");
-        }
 
         Booking booking = new Booking();
         booking.setStartTime(startTime);
@@ -53,6 +50,7 @@ public class BookingServiceImpl implements BookingService {
         booking.setParkingSpot(parkingSpot);
         parkingSpot.setIsOccupied(true);
         booking.setState(BookingState.ACTIVE);
+        booking.setVehicle(vehicle);
         parkingSpotRepository.save(parkingSpot);
 
         try {
@@ -61,15 +59,6 @@ public class BookingServiceImpl implements BookingService {
         } catch (ValidationException e) {
             System.out.println("Booking failed: " + e.getMessage());
         }
-        return bookingRepository.save(booking);
-    }
-
-    @Override
-    public Booking extendBooking(Long bookingId, LocalDateTime newEndTime) {
-        Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid booking ID"));
-
-        booking.setEndTime(newEndTime);
         return bookingRepository.save(booking);
     }
 
@@ -84,37 +73,21 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public void cancelBooking(Long bookingId) {
-        Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid booking ID"));
-
-        ParkingSpot parkingSpot = booking.getParkingSpot();
-        parkingSpot.setIsOccupied(false);
-        booking.setState(BookingState.CANCELLED);
-        parkingSpotRepository.save(parkingSpot);
-        bookingRepository.delete(booking);
+    public double calculateFee(Booking booking) {
+        FeeCalculationStrategy strategy = getStrategyForSpotFees(booking);
+        return strategy.calculateFee(booking);
     }
 
-    @Override
-    public List<Booking> getBookingsByVehicle(Long vehicleId) {
-        return bookingRepository.findBookingsByVehicle_Id(vehicleId);
-    }
-
-    @Override
-    public double calculateFee(Long bookingId) {
-        Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid booking ID"));
-
-        long durationInHours = java.time.Duration.between(booking.getStartTime(), booking.getEndTime()).toHours();
-        FeeCalculationStrategy strategy = getStrategyForSpotFees(booking.getParkingSpot());
-        return strategy.calculateFee(booking.getParkingSpot(), durationInHours);
-    }
-
-    private FeeCalculationStrategy getStrategyForSpotFees(ParkingSpot parkingSpot) {
-        if ("LARGE".equalsIgnoreCase(parkingSpot.getSpotSize())) {
+    private FeeCalculationStrategy getStrategyForSpotFees(Booking booking) {
+        if (booking.calculateDurationInHours() > 5) {
             return new DiscountedFeeCalculationStrategy(10.0);
         } else {
             return new StandardFeeCalculationStrategy();
         }
+    }
+
+    public Booking findById(Long bookingId) {
+        return bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new IllegalArgumentException("Booking not found with ID: " + bookingId));
     }
 }
