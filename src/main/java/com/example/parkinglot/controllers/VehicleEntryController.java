@@ -1,7 +1,6 @@
 package com.example.parkinglot.controllers;
 
 import com.example.parkinglot.interfaces.BookingService;
-import com.example.parkinglot.interfaces.ParkingRateService;
 import com.example.parkinglot.interfaces.ParkingSpotService;
 import com.example.parkinglot.interfaces.VehicleService;
 import com.example.parkinglot.model.*;
@@ -22,9 +21,6 @@ public class VehicleEntryController {
     private ParkingSpotService spotService;
 
     @Autowired
-    private ParkingRateService rateService;
-
-    @Autowired
     private BookingService bookingService;
 
     @PostMapping
@@ -37,7 +33,6 @@ public class VehicleEntryController {
 
         LocalDateTime startTime = LocalDateTime.now();
         LocalDateTime endTime = startTime.plusHours(1); // Example end time (adjust as needed)
-        rateService.setRate(availableSpot.getSpotId(), availableSpot.getSpotSize(), hourlyRate, startTime, endTime);
 
         Booking booking = bookingService.createBooking(vehicle, availableSpot.getSpotId(), startTime, endTime);
 

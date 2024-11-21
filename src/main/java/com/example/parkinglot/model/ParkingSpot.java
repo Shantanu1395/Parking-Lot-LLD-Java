@@ -25,8 +25,7 @@ public class ParkingSpot {
     @OneToOne(mappedBy = "parkingSpot", cascade = CascadeType.ALL, orphanRemoval = true)
     private Vehicle vehicle;
 
-    @OneToMany(mappedBy = "parkingSpot", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ParkingRate> parkingRates;
+    private double baseParkingRate;
 
     public ParkingSpot(boolean isOccupied) {
         this.isOccupied = isOccupied;
@@ -64,10 +63,6 @@ public class ParkingSpot {
         return vehicle;
     }
 
-    public List<ParkingRate> getParkingRates() {
-        return parkingRates;
-    }
-
     public String getSpotSize() {
         return spotSize;
     }
@@ -82,5 +77,25 @@ public class ParkingSpot {
 
     public SpotState getState() {
         return state;
+    }
+
+    public void setBaseParkingRate() {
+        switch (spotSize){
+            case "Small":
+                baseParkingRate = 10;
+                break;
+            case "Medium":
+                baseParkingRate = 20;
+            case "Large":
+                baseParkingRate = 30;
+                break;
+            default:
+                baseParkingRate = 5;
+                break;
+        }
+    }
+
+    public double getBaseParkingRate(){
+        return baseParkingRate;
     }
 }

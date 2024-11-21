@@ -64,6 +64,7 @@ public class ParkingSpotServiceImpl implements ParkingSpotService {
             assignedSpot.setIsOccupied(true);
             assignedSpot.setVehicle(vehicle);
             assignedSpot.setState(SpotState.OCCUPIED);
+            assignedSpot.setBaseParkingRate();
             vehicle.setParkingSpot(assignedSpot);
 
             parkingSpotRepository.save(assignedSpot);

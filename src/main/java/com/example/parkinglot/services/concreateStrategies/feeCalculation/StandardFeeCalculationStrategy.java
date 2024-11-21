@@ -10,7 +10,7 @@ public class StandardFeeCalculationStrategy implements FeeCalculationStrategy {
     @Override
     public double calculateFee(Booking booking) {
 
-        double hourlyRate = booking.getParkingSpot().getParkingRates().get(0).getHourlyRate();
+        double hourlyRate = booking.getParkingSpot().getBaseParkingRate();
         return hourlyRate * (booking.calculateDurationInHours() + 1);
     }
 }

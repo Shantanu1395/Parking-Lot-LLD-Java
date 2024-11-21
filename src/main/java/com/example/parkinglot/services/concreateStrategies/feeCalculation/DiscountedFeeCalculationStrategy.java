@@ -19,7 +19,7 @@ public class DiscountedFeeCalculationStrategy implements FeeCalculationStrategy 
 
     @Override
     public double calculateFee(Booking booking) {
-        double hourlyRate = booking.getParkingSpot().getParkingRates().get(0).getHourlyRate();
+        double hourlyRate = booking.getParkingSpot().getBaseParkingRate();
         double originalFee = hourlyRate * booking.calculateDurationInHours();
         return originalFee - (originalFee * discountPercentage / 100);
     }

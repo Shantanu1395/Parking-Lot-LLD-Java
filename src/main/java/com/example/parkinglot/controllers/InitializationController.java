@@ -45,7 +45,7 @@ public class InitializationController {
 
             // Step 4: Add Spots to the Level
             for (int spot = 1; spot <= numSpotsPerLevel; spot++) {
-                spotService.createSpot("Regular", currentLevel.getId());
+                spotService.createSpot("Small", currentLevel.getId());
             }
         }
 
