@@ -31,17 +31,14 @@ public class VehicleEntryController {
     public ResponseEntity<?> vehicleEntry(@RequestParam String licensePlate,
                                           @RequestParam String vehicleType,
                                           @RequestParam Double hourlyRate) {
-        // Step 1: Register Vehicle
-        Vehicle vehicle = vehicleService.registerVehicle(licensePlate, vehicleType);
 
+        Vehicle vehicle = vehicleService.registerVehicle(licensePlate, vehicleType);
         ParkingSpot availableSpot = spotService.assignSpotToVehicle(vehicle);
 
-        // Step 4: Set the Rate for the Spot
         LocalDateTime startTime = LocalDateTime.now();
         LocalDateTime endTime = startTime.plusHours(1); // Example end time (adjust as needed)
-        ParkingRate rate = rateService.setRate(availableSpot.getSpotId(), availableSpot.getSpotSize(), hourlyRate, startTime, endTime);
+        rateService.setRate(availableSpot.getSpotId(), availableSpot.getSpotSize(), hourlyRate, startTime, endTime);
 
-        // Step 5: Create a Booking
         Booking booking = bookingService.createBooking(vehicle, availableSpot.getSpotId(), startTime, endTime);
 
         return ResponseEntity.ok(booking.getId());

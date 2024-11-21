@@ -3,7 +3,6 @@ package com.example.parkinglot.model;
 import com.example.parkinglot.enums.SpotState;
 
 import javax.persistence.*;
-import java.util.Arrays;
 import java.util.List;
 
 @Entity

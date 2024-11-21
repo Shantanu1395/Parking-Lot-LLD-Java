@@ -1,8 +1,6 @@
 package com.example.parkinglot.model;
 
 import com.example.parkinglot.enums.BookingState;
-import com.example.parkinglot.enums.SpotState;
-
 import javax.persistence.*;
 import java.time.Duration;
 import java.time.LocalDateTime;

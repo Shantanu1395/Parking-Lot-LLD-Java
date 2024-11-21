@@ -28,6 +28,7 @@ public class ParkingLot {
         this.name = name;
     }
 
+    // Getters and Setters
     public void setName(String name) {
         this.name = name;
     }
@@ -51,6 +52,4 @@ public class ParkingLot {
     public Long getId(){
         return id;
     }
-
-    // Getters and Setters
 }
