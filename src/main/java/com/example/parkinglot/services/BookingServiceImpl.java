@@ -12,6 +12,7 @@ import com.example.parkinglot.repositories.ParkingSpotRepository;
 import com.example.parkinglot.interfaces.BookingService;
 import com.example.parkinglot.interfaces.strategy.FeeCalculationStrategy;
 import com.example.parkinglot.services.concreateStrategies.feeCalculation.DiscountedFeeCalculationStrategy;
+import com.example.parkinglot.services.concreateStrategies.feeCalculation.FeeCalculationFactory;
 import com.example.parkinglot.services.concreateStrategies.feeCalculation.StandardFeeCalculationStrategy;
 import com.example.parkinglot.services.validation.BookingValidationChain;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,9 @@ public class BookingServiceImpl implements BookingService {
 
     @Autowired
     private ParkingSpotService parkingSpotService;
+
+    @Autowired
+    private FeeCalculationFactory feeCalculationFactory;
 
     private BookingValidator validatorChain;
 
@@ -74,16 +78,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public double calculateFee(Booking booking) {
-        FeeCalculationStrategy strategy = getStrategyForSpotFees(booking);
-        return strategy.calculateFee(booking);
-    }
-
-    private FeeCalculationStrategy getStrategyForSpotFees(Booking booking) {
-        if (booking.calculateDurationInHours() > 5) {
-            return new DiscountedFeeCalculationStrategy(10.0);
-        } else {
-            return new StandardFeeCalculationStrategy();
-        }
+        return feeCalculationFactory.ChooseStrategy(booking).calculateFee(booking);
     }
 
     public Booking findById(Long bookingId) {

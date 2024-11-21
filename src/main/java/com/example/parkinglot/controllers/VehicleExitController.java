@@ -31,9 +31,8 @@ public class VehicleExitController {
 
         LocalDateTime endTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(System.currentTimeMillis()), ZoneId.systemDefault());
         booking.setEndTime(endTime);
-        bookingService.endBooking(booking.getId());
-
         double fee = bookingService.calculateFee(booking);
+        bookingService.endBooking(booking.getId());
         return ResponseEntity.ok(fee);
     }
 }

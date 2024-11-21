@@ -4,7 +4,6 @@ import com.example.parkinglot.interfaces.GateService;
 import com.example.parkinglot.model.Gate;
 import com.example.parkinglot.model.ParkingLot;
 import com.example.parkinglot.repositories.GateRepository;
-import com.example.parkinglot.repositories.ParkingLotRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

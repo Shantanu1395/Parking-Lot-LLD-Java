@@ -1,0 +1,9 @@
+-- Initialize Infra
+curl --location --request POST 'http://localhost:8080/api/initialize?name=MainParkingLot&numGates=3&numLevels=2&numSpotsPerLevel=10'
+
+-- Vehicle Entry
+curl --location --request POST 'http://localhost:8080/api/entry?licensePlate=7979&vehicleType=Small&hourlyRate=20.0'
+
+-- Vehicle Exit
+curl --location --request POST 'http://localhost:8080/api/exit/endBooking?bookingId=1' \
+--header 'Content-Type: application/json'

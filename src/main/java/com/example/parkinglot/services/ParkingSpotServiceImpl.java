@@ -9,6 +9,7 @@ import com.example.parkinglot.repositories.ParkingSpotRepository;
 import com.example.parkinglot.repositories.VehicleRepository;
 import com.example.parkinglot.interfaces.ParkingSpotService;
 import com.example.parkinglot.interfaces.strategy.SpotAssignmentStrategy;
+import com.example.parkinglot.services.concreateStrategies.spotAssignment.SpotAssignmentFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +33,7 @@ public class ParkingSpotServiceImpl implements ParkingSpotService {
     private VehicleRepository vehicleRepository;
 
     @Autowired
-    private SpotAssignmentStrategy spotAssignmentStrategy;
+    private SpotAssignmentFactory spotAssignmentFactory;
 
     @Override
     public ParkingSpot createSpot(String spotSize, Long levelId) {
@@ -55,7 +56,7 @@ public class ParkingSpotServiceImpl implements ParkingSpotService {
 
         lock.writeLock().lock();
         try{
-            ParkingSpot assignedSpot = spotAssignmentStrategy.assignSpot(vehicle);
+            ParkingSpot assignedSpot = spotAssignmentFactory.ChooseStrategy(true).assignSpot(vehicle);
 
             if (assignedSpot == null) {
                 throw new IllegalStateException("No available parking spot for vehicle type: " + vehicle.getType());

@@ -3,13 +3,10 @@ package com.example.parkinglot.services;
 import com.example.parkinglot.model.Level;
 import com.example.parkinglot.model.ParkingLot;
 import com.example.parkinglot.repositories.LevelRepository;
-import com.example.parkinglot.repositories.ParkingLotRepository;
 import com.example.parkinglot.interfaces.LevelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class LevelServiceImpl implements LevelService {
